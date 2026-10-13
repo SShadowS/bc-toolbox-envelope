@@ -1,0 +1,24 @@
+{
+  "name": "@sshadows/bc-toolbox-envelope",
+  "version": "0.1.0",
+  "description": "Shared machine envelope for the bc-toolbox: MCP isError body and CLI --json envelope, with stable error codes and JSON Schemas",
+  "license": "MIT",
+  "type": "module",
+  "repository": { "type": "git", "url": "git+https://github.com/SShadowS/bc-toolbox-envelope.git" },
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
+    "./schema/error-body.schema.json": "./schema/error-body.schema.json",
+    "./schema/cli-envelope.schema.json": "./schema/cli-envelope.schema.json"
+  },
+  "files": ["dist", "schema", "README.md", "LICENSE"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "schemas": "bun scripts/write-schemas.ts",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && bun build src/index.ts --target=node --external zod --outdir dist && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "prepublishOnly": "bun run typecheck && bun test && bun run build"
+  },
+  "peerDependencies": { "zod": "^4.2.0" },
+  "devDependencies": { "bun-types": "^1.3.14", "typescript": "^6.0.3", "zod": "^4.4.3" }
+}
