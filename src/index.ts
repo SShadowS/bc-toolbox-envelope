@@ -37,9 +37,12 @@ export type ErrorCategory = (typeof ERROR_CATEGORIES)[number];
 /** Any code: a core code or a tool's UPPER_SNAKE extension code. */
 export const ERROR_CODE_PATTERN = /^[A-Z][A-Z0-9_]*$/;
 
-export type ErrorDetails = Record<string, string | number | boolean | null>;
+export type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
 
-const detailsSchema = z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]));
+/** Machine-readable extras. Lists and records stay structured (an agent should not have to parse a JSON string). */
+export type ErrorDetails = Record<string, JsonValue>;
+
+const detailsSchema = z.record(z.string(), z.json());
 
 function errorObjectSchema(code: z.ZodType<string>, withTool: boolean) {
   return z.strictObject({

@@ -31,6 +31,14 @@ describe("error body", () => {
     expect(ErrorBodySchema.safeParse({ ...ok, error: { ...ok.error, code: "not-a-code" } }).success).toBe(false);
   });
 
+  test("details carry JSON arrays and objects, not only scalars", () => {
+    const details = { fieldErrors: [{ field: "Payment Terms Code", message: "bad" }], ids: ["pc:1"], target: { page: { id: 22 } }, n: null };
+    const body = errorBody("t", new ToolboxError("VALIDATION_ERROR", "x", "validation", false, details), ["fix it"]);
+    expect(ErrorBodySchema.safeParse(body).success).toBe(true);
+    expect(body.error.details).toEqual(details);
+    expect(ErrorBodySchema.safeParse({ ...body, error: { ...body.error, details: { f: () => 1 } } }).success).toBe(false);
+  });
+
   test("a tool's strict schema accepts core + its extensions only", () => {
     const strict = errorBodySchema(["PROFILE_ACTIVE"] as const);
     const make = (code: string) => ({ error: { code, category: "state", message: "m", retryable: false, tool: "t", details: {} }, nextSteps: ["s"] });

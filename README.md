@@ -18,6 +18,9 @@ cliError(new ToolboxError("NOT_FOUND", "no app.json", "validation"), ["Run insid
 // { schemaVersion: "1", status: "error", warnings: [], error: { code, category, message, retryable, details, nextSteps } }
 ```
 
+`details` holds any JSON value (since 0.2.0): send a list as an array and a record as an
+object, never as a JSON-encoded string.
+
 ## Error codes
 
 `TOOLBOX_CORE_ERROR_CODES` mean the same thing for every tool: `INVALID_ARGUMENT`,
